@@ -40,7 +40,7 @@ define nexus::artifact (
   include nexus
 
   if($nexus::username and $nexus::password) {
-    $args = "-u ${nexus::username} -p '${nexus::password}'"
+    $args = "-u ${nexus::username} -p \"${nexus::password}\""
   } elsif ($nexus::netrc) {
     $args = '-m'
   }
@@ -56,6 +56,7 @@ define nexus::artifact (
       command => "${cmd} -z",
       timeout => $timeout,
       before  => Exec["Download ${name}"],
+      creates => $output,
     }
   }
 
@@ -64,6 +65,7 @@ define nexus::artifact (
       command => $cmd,
       creates => $output,
       timeout => $timeout,
+      creates => $output,
     }
   } elsif $ensure == absent {
     file { "Remove ${name}":
@@ -74,6 +76,7 @@ define nexus::artifact (
     exec { "Download ${name}":
       command => $cmd,
       timeout => $timeout,
+      creates => $output,
     }
   }
 
